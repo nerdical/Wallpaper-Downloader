@@ -18,15 +18,15 @@ import re
 r = praw.Reddit(user_agent = ("/r/wallpaper downloader by /u/koberg"
 			  "User defined Frequency by hour, [to]day, and week"))
 
-#Reddit user login information
-user_id = ""
-user_pass = ""
-r.login(user_id, user_pass)
-
 wallpapers = r.get_subreddit("wallpaper")
 ##########CHANGE NOTHING ABOVE THIS LINE##########
 
 #USER DEFINED VARIABLES BELOW:
+
+#Reddit user login information
+user_id = ""
+user_pass = ""
+r.login(user_id, user_pass)
 
 #You can set more than one boolean to true.
 
