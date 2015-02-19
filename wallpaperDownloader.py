@@ -43,7 +43,7 @@ have been downloaded.
 #qty = 10
 #age = 7 
 
-path = os.path.expanduser("~\\Pictures\\wallpapers\\") #Path to save images
+path = os.path.expanduser("~\\wallpaper\\directory\\") #Path to save images
 
 ##########CHANGE NOTHING BELOW THIS LINE##########
 ##########    BOT SCRIPT BEGINS HERE    ##########
