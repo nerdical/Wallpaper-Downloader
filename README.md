@@ -2,7 +2,7 @@
 <br>
 Reddit bot to download top submissions in /r/wallpapers
 <br>
-Run this script manually, or setup a schedule using cron or windows task scheduler, to download the top submissions in /r/wallpapers.<br>
+Run this script manually, or setup a schedule using cron or windows task scheduler to download the top submissions in /r/wallpapers.<br>
 
 <dl>
 <dt>Variables to modify</dt>
