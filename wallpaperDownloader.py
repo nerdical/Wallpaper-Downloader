@@ -12,15 +12,18 @@
 ######VARIABLES AND SUCH THAT DO NOT CHANGE!######
 import praw
 import urllib
-import os.path
+import os
 import re
+import random
+import time
 
 r = praw.Reddit(user_agent = ("/r/wallpaper downloader by /u/koberg"
 			  "User defined Frequency by hour, [to]day, and week"))
 
+#r.login("wallpaper_downloader", "D0wn10adW@11p@P3r5")
 #Reddit user login information
-user_id = "username"
-user_pass = "password"
+user_id = "<REDDIT USER NAME>"
+user_pass = "<REDDIT USER PASSWORD>"
 r.login(user_id, user_pass)
 
 wallpapers = r.get_subreddit("wallpaper")
@@ -35,15 +38,16 @@ week = True #Set week to True to check top submissions from 'this week'
 number = 10 #Set this value to the number of top submissions, ie: top 5
 
 '''
-Future versions/revisions will include the options to limit the number of wallpapers in your destination folder by
-removing the oldest wallpapers and replacing them with newer ones.
-There will also be the option to remove wallpapers by age. The oldens n files will be removed after new wallpapers
-have been downloaded.
+Set the qty value to limit the number of files located in your target path.
+Set the age value to limit the number of days to keep files.
+Set both qty and age to 0 if you do not want to automatically remove wallpapers.
 '''
-#qty = 10
-#age = 7 
+qty = 0
+age = 7
 
-path = os.path.expanduser("~\\wallpaper\\directory\\") #Path to save images
+path = os.path.expanduser("~\\Pictures\\wallpapers\\") #Path to save images
+
+words = ["Awesome!", "Amazing!", "Beautiful!", "Brilliant!", "Cool!", "Fantastic!"]
 
 ##########CHANGE NOTHING BELOW THIS LINE##########
 ##########    BOT SCRIPT BEGINS HERE    ##########
@@ -56,9 +60,11 @@ def downloader(range):
 	elif range == "hour":
 		top = wallpapers.get_top_from_hour(limit=number)
 	else:
-		print "Error with downloader() function"
+		print "Error with range variable in downloader() function"
 	
 	for image in top:
+		
+		adjective = words[random.randrange(1,6)]
 		#Make sure image(s) aren't NSFW
 		if not image.over_18:
 	
@@ -73,7 +79,7 @@ def downloader(range):
 					#check if File already exists
 					if not os.path.isfile(path + fileName.group(0)):
 						urllib.urlretrieve(url, path + fileName.group(0))
-						image.add_comment("Beautiful!\n\nThis image has been downloaded by /u/wallpaper_downloader for use on a personal computer.\n\nThank you for the submission, have an upvote!")
+						image.add_comment("%s\n\nThis image has been downloaded by /u/wallpaper_downloader for use on a personal computer.\n\nThank you for the submission, have an upvote!" %(adjective)) 
 						image.upvote()
 					else:
 						print "Image " + str(image.url) + " already exists"
@@ -85,15 +91,36 @@ def downloader(range):
 					#If file does not exists on local machine:
 					if not os.path.isfile(path + fileName.group(0)):
 						urllib.urlretrieve(url, path + fileName.group(0))
-						image.add_comment("Beautiful!\n\nThis image has been downloaded by /u/wallpaper_downloader for use on a personal computer.\n\nThank you for the submission, have an upvote!")
+						image.add_comment("%s\n\nThis image has been downloaded by /u/wallpaper_downloader for use on a personal computer.\n\nThank you for the submission, have an upvote!" %(adjective))
 						image.upvote()
 					else:
 						print "Image " + str(image.url) + " already exists"
 					
 			else:
-				print "\t" + str(image.url) + "\n\t not located on imgur"
+				print "\t" + str(image.url) + "\n\t not located on www.imgur.com"
 	
 	print "Done checking %s" %(range)
+
+def cleanup():
+	
+	#Function to clean up wallpaper folder based on age and/or quantity of images stored
+	if qty > 0:
+		print "Cleanup by Quantity..."
+		print path
+	
+	if age > 0:
+		import time
+		count = 1
+		now = time.time()
+		
+		print "Cleanup by Age..."
+		for image in os.listdir(path):
+			if os.stat(path + image).st_mtime < now - age * 86400:
+				if os.path.isfile(path + image):
+					os.remove(path + image)
+					count += 1
+	
+	raw_input("Removed " + str(count) + " images.\nPress Enter to Complete")
 
 if hour:
 	downloader("hour")
@@ -101,3 +128,5 @@ if day:
 	downloader("day")
 if week:
 	downloader("week")
+
+cleanup()
