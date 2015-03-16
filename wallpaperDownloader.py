@@ -22,8 +22,8 @@ r = praw.Reddit(user_agent = ("/r/wallpaper downloader by /u/koberg"
 
 #r.login("wallpaper_downloader", "D0wn10adW@11p@P3r5")
 #Reddit user login information
-user_id = "<REDDIT USER NAME>"
-user_pass = "<REDDIT USER PASSWORD>"
+user_id = "<REDDIT USER ID>"
+user_pass = "<REDDIT USER PASS>"
 r.login(user_id, user_pass)
 
 wallpapers = r.get_subreddit("wallpaper")
@@ -35,17 +35,17 @@ hour = True #Set hour to True to check top submissions from 'this hour'
 day = True #Set day to True to check top submissions from 'today'
 week = True #Set week to True to check top submissions from 'this week'
 
-number = 10 #Set this value to the number of top submissions, ie: top 5
+number = 10 #Set this value to the number of top submissions, ie: top 10
 
 '''
 Set the qty value to limit the number of files located in your target path.
 Set the age value to limit the number of days to keep files.
 Set both qty and age to 0 if you do not want to automatically remove wallpapers.
 '''
-qty = 0
+#qty = 0 Functionality not yet implemented
 age = 7
 
-path = os.path.expanduser("~\\Pictures\\wallpapers\\") #Path to save images
+path = os.path.expanduser("~\\Pictures\\wallpapers\\") #Path to save images. Can be anywhere on your local machine.
 
 words = ["Awesome!", "Amazing!", "Beautiful!", "Brilliant!", "Cool!", "Fantastic!"]
 
@@ -64,7 +64,7 @@ def downloader(range):
 	
 	for image in top:
 		
-		adjective = words[random.randrange(1,6)]
+		adjective = words[random.randrange(1,len(words))]
 		#Make sure image(s) aren't NSFW
 		if not image.over_18:
 	
@@ -79,7 +79,7 @@ def downloader(range):
 					#check if File already exists
 					if not os.path.isfile(path + fileName.group(0)):
 						urllib.urlretrieve(url, path + fileName.group(0))
-						image.add_comment("%s\n\nThis image has been downloaded by /u/wallpaper_downloader for use on a personal computer.\n\nThank you for the submission, have an upvote!" %(adjective)) 
+						image.add_comment("%s\n\nThis image has been downloaded by /u/wallpaper_downloader for use on a personal computer.\n\nThank you for the submission, have an upvote!\n\nMore information is available at https://github.com/nerdical/Wallpaper-Downloader" %(adjective))
 						image.upvote()
 					else:
 						print "Image " + str(image.url) + " already exists"
@@ -91,7 +91,7 @@ def downloader(range):
 					#If file does not exists on local machine:
 					if not os.path.isfile(path + fileName.group(0)):
 						urllib.urlretrieve(url, path + fileName.group(0))
-						image.add_comment("%s\n\nThis image has been downloaded by /u/wallpaper_downloader for use on a personal computer.\n\nThank you for the submission, have an upvote!" %(adjective))
+						image.add_comment("%s\n\nThis image has been downloaded by /u/wallpaper_downloader for use on a personal computer.\n\nThank you for the submission, have an upvote!\n\nMore information is available at https://github.com/nerdical/Wallpaper-Downloader" %(adjective))
 						image.upvote()
 					else:
 						print "Image " + str(image.url) + " already exists"
@@ -104,10 +104,12 @@ def downloader(range):
 def cleanup():
 	
 	#Function to clean up wallpaper folder based on age and/or quantity of images stored
+	'''
+	Quantity removal loop not yet worked out
 	if qty > 0:
 		print "Cleanup by Quantity..."
 		print path
-	
+	'''
 	if age > 0:
 		import time
 		count = 1
@@ -122,11 +124,12 @@ def cleanup():
 	
 	raw_input("Removed " + str(count) + " images.\nPress Enter to Complete")
 
-if hour:
-	downloader("hour")
-if day:
-	downloader("day")
-if week:
-	downloader("week")
-
-cleanup()
+if __name__ == '__main__':
+	if hour:
+		downloader("hour")
+	if day:
+		downloader("day")
+	if week:
+		downloader("week")
+	
+	cleanup()
